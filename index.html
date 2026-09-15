@@ -9,8 +9,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="effects.css" />
 </head>
 <body>
+<div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
 
 <!-- ===== Header ===== -->
 <header class="site-header" id="top">
@@ -36,6 +38,8 @@
 
 <!-- ===== Hero ===== -->
 <section class="hero">
+  <div class="hero-rays" aria-hidden="true"></div>
+  <canvas class="hero-canvas" id="bubbleCanvas" aria-hidden="true"></canvas>
   <div class="hero-overlay"></div>
   <div class="wrap hero-inner">
     <div class="hero-copy">
@@ -65,6 +69,9 @@
   <div class="hero-strip" aria-hidden="true">
     <span>Hand Wash &amp; Dry</span><span>·</span><span>Interior Vacuum</span><span>·</span><span>Rain-X Spray Wax</span><span>·</span><span>Tire Dressing</span><span>·</span><span>Free Undercarriage Wash</span><span>·</span><span>Hand Wash &amp; Dry</span><span>·</span><span>Interior Vacuum</span><span>·</span><span>Rain-X Spray Wax</span><span>·</span><span>Tire Dressing</span><span>·</span><span>Free Undercarriage Wash</span><span>·</span>
   </div>
+  <a class="scroll-cue" href="#services" aria-label="Scroll to services">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/></svg>
+  </a>
 </section>
 
 <!-- ===== Trust strip ===== -->
@@ -310,7 +317,7 @@
       </ul>
     </div>
     <div class="why-media">
-      <img src="images/crew.jpg" alt="A Windy City crew member hand-washing a car in a branded shirt" loading="lazy" />
+      <img src="images/crew.jpg" alt="A Windy City crew member hand-washing a car in a branded shirt" loading="lazy" data-parallax="0.14" />
       <div class="media-badge"><strong>By hand</strong><span>every panel, every time</span></div>
     </div>
   </div>
@@ -557,5 +564,7 @@
     });
   }
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="effects.js"></script>
 </body>
 </html>

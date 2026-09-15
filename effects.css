@@ -1,0 +1,104 @@
+/* =====================================================================
+   Immersive layer — WebGL bubble hero, scroll-driven motion, 3D depth.
+   ADDITIVE ONLY: no fonts, colors, copy, or branding are changed here.
+   ===================================================================== */
+
+/* --- Scroll progress bar --- */
+.scroll-progress{
+  position:fixed;top:0;left:0;height:3px;width:0;z-index:100;pointer-events:none;
+  background:linear-gradient(90deg,var(--teal),var(--aqua));
+  box-shadow:0 0 12px rgba(76,210,239,.75);
+}
+
+/* --- Hero becomes a full-viewport immersive scene --- */
+.hero{
+  min-height:100vh;min-height:100svh;
+  display:flex;flex-direction:column;justify-content:flex-end;
+}
+.hero-inner{flex:1;display:flex;flex-direction:column;justify-content:center}
+
+/* layered depth order inside the hero */
+.hero-rays{z-index:0}
+.hero-overlay{z-index:1}
+.hero-canvas{z-index:2}
+.hero-inner,.hero-strip,.scroll-cue{z-index:3}
+
+/* WebGL bubble canvas */
+.hero-canvas{
+  position:absolute;inset:0;width:100%;height:100%;pointer-events:none;
+  opacity:0;transition:opacity 1.4s ease;
+}
+.hero-canvas.ready{opacity:1}
+
+/* soft moving light / caustics behind the hero content */
+.hero-rays{
+  position:absolute;inset:-25% -15%;pointer-events:none;opacity:.55;
+  background:
+    conic-gradient(from 210deg at 62% -5%,
+      rgba(76,210,239,.12), transparent 22%,
+      rgba(255,255,255,.07) 42%, transparent 66%,
+      rgba(76,210,239,.10) 88%, transparent);
+  filter:blur(24px);mix-blend-mode:screen;
+  animation:raysDrift 26s ease-in-out infinite alternate;
+}
+@keyframes raysDrift{
+  from{transform:translate3d(-2%,-1%,0) rotate(-3deg) scale(1.05)}
+  to{transform:translate3d(3%,2%,0) rotate(3deg) scale(1.12)}
+}
+
+/* scroll cue */
+.scroll-cue{
+  position:absolute;left:50%;bottom:4.6rem;transform:translateX(-50%);
+  width:38px;height:38px;display:grid;place-items:center;color:#daf1fb;
+  border:1px solid rgba(255,255,255,.35);border-radius:50%;
+  background:rgba(255,255,255,.07);backdrop-filter:blur(4px);
+  animation:cueBob 2.1s ease-in-out infinite;transition:opacity .4s ease;
+}
+.scroll-cue svg{width:18px;height:18px}
+@keyframes cueBob{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}
+
+/* --- Richer scroll reveals (overrides base .reveal) --- */
+.reveal{
+  opacity:0;transform:translateY(32px) scale(.984);
+  transition:opacity .8s cubic-bezier(.16,.84,.36,1),
+             transform .8s cubic-bezier(.16,.84,.36,1);
+  transition-delay:calc(var(--rv,0) * 60ms);
+  will-change:opacity,transform;
+}
+.reveal.in{opacity:1;transform:none}
+
+/* --- Scroll-spy nav highlight --- */
+.main-nav a.active{color:var(--navy)}
+.main-nav a.active::after{width:100%}
+
+/* --- 3D tilt: give the depth-capable cards their own 3D space --- */
+.card,.price-card,.detail-item,.review,.loc-card,.gallery figure,.stat{
+  transform-style:preserve-3d;
+}
+
+/* --- Atmospheric shimmer on the dark bands --- */
+.specials{position:relative;overflow:hidden}
+.specials-inner{position:relative;z-index:1}
+.cta-band{overflow:hidden}
+.cta-inner{position:relative;z-index:1}
+.specials::after,.cta-band::after{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(70% 130% at 15% -20%,rgba(76,210,239,.20),transparent 60%);
+  mix-blend-mode:screen;animation:shimmer 16s ease-in-out infinite alternate;
+}
+@keyframes shimmer{
+  from{opacity:.5;transform:translate3d(-4%,0,0)}
+  to{opacity:.95;transform:translate3d(6%,3%,0)}
+}
+
+/* --- parallax media gets room to move without exposing edges --- */
+[data-parallax]{will-change:transform}
+
+/* --- Respect reduced motion: strip every added effect --- */
+@media(prefers-reduced-motion:reduce){
+  .hero{min-height:0}
+  .hero-canvas,.hero-rays,.scroll-cue,.scroll-progress{display:none}
+  .specials::after,.cta-band::after{animation:none}
+  .reveal{opacity:1;transform:none;transition:none}
+  [data-parallax]{transform:none !important}
+}
